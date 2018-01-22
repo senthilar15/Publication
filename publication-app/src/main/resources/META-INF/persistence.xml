@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+	<persistence-unit name="publication_app" transaction-type="RESOURCE_LOCAL" >
+	
+   <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+   
+    <class>org.mag.Article</class>
+    <class>org.mag.Magazine</class>
+    <class>org.mag.pub.Address</class>
+    <class>org.mag.pub.Author</class>
+    <class>org.mag.pub.Company</class>
+    <class>org.mag.subscribe.Document</class>
+    <class>org.mag.subscribe.LifetimeSubscription</class>
+    <class>org.mag.subscribe.Subscription</class>
+    <class>org.mag.subscribe.TrialSubscription</class> 
+    <class>org.mag.subscribe.Contract</class>
+    
+    
+    <properties>
+      <!-- Configuring JDBC properties -->
+      <property name="javax.persistence.jdbc.url" value="jdbc:sqlserver://172.24.114.239\\BookStore:1433;database=BookStore; " />
+      <property name="javax.persistence.jdbc.user" value="amanda" />
+      <property name="javax.persistence.jdbc.password" value="amanda" />
+      <property name="javax.persistence.jdbc.driver" value="com.microsoft.sqlserver.jdbc.SQLServerDriver" />
+
+      <!-- Hibernate properties -->
+      <property name="hibernate.show_sql" value="true" />
+      <property name="hibernate.format_sql" value="true" />
+      <property name="hibernate.dialect" value="org.hibernate.dialect.SQLServerDialect" />
+      <!-- <property name="hibernate.hbm2ddl.auto" value="validate" /> -->
+      <property name="hibernate.generate_statistics" value="true" />
+      
+
+      <property name="hibernate.connection.provider_class" value="com.zaxxer.hikari.hibernate.HikariConnectionProvider"/>
+	  <property name="hibernate.hikari.minimumIdle" value="5"/>
+	  <property name="hibernate.hikari.maximumPoolSize" value="10"/>
+	  <property name="hibernate.hikari.idleTimeout" value="30000"/>
+
+      <!-- Configuring Connection Pool 
+      <property name="hibernate.c3p0.min_size" value="5" />
+      <property name="hibernate.c3p0.max_size" value="20" />
+      <property name="hibernate.c3p0.timeout" value="500" />
+      <property name="hibernate.c3p0.max_statements" value="50" />
+      <property name="hibernate.c3p0.idle_test_period" value="2000" />-->
+      
+      
+     <property name="javax.persistence.schema-generation.scripts.action" value="create"/>
+     <property name="javax.persistence.schema-generation.create-source" value="metadata"/>
+     <property name="javax.persistence.schema-generation.scripts.create-target" value="target/jpa/sql/create-schema_publication.sql"/> 
+    </properties>
+  </persistence-unit>
+</persistence>

@@ -1,0 +1,230 @@
+<entity-mappings xmlns="http://java.sun.com/xml/ns/persistence/orm" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm orm_1_0.xsd"
+    version="1.0">
+    <mapped-superclass class="org.mag.subscribe.Document">
+        <attributes>
+            <id name="id">
+                <generated-value strategy="IDENTITY"/>
+            </id>
+            <version name="version">
+                <column name="VERS"/>
+            </version>
+        </attributes>
+    </mapped-superclass>
+    <entity class="org.mag.Magazine">
+        <table name="MAG"/>
+        <id-class class="org.mag.Magazine.MagazineId"/>
+        <discriminator-value>Mag</discriminator-value>
+        <attributes>
+            <id name="isbn">
+                <column length="9"/>
+            </id>
+            <id name="title"/>
+            <basic name="name"/>
+            <basic name="price"/>
+            <basic name="copiesSold">
+                <column name="COPIES"/>
+            </basic>
+            <version name="version">
+                <column name="VERS"/>
+            </version>
+            <many-to-one name="publisher" fetch="LAZY">
+                <join-column name="PUB_ID"/>
+                <cascade>
+                    <cascade-persist/>
+                </cascade>
+            </many-to-one>
+            <one-to-many name="articles">
+                <order-by/>
+                <join-table name="MAG_ARTS">
+                    <join-column name="MAG_ISBN" referenced-column-name="ISBN"/>
+                    <join-column name="MAG_TITLE" referenced-column-name="TITLE"/>
+                    <inverse-join-column name="ART_ID"/>
+                </join-table>
+                <cascade>
+                    <cascade-persist/>
+                    <cascade-remove/>
+                </cascade>
+            </one-to-many>
+            <one-to-one name="coverArticle" fetch="LAZY">
+                <join-column name="COVER_ID"/>
+                <cascade>
+                    <cascade-persist/>
+                    <cascade-remove/>
+                </cascade>
+            </one-to-one>
+            <transient name="data"/>
+        </attributes>
+    </entity>
+    <entity class="org.mag.Article">
+        <table name="ART">
+            <unique-constraint>
+               <column-name>TITLE</column-name>
+            </unique-constraint>
+        </table>
+        <sequence-generator name="ArticleSeq" sequenceName="ART_SEQ"/>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE" generator="ArticleSeq"/>
+            </id>
+            <basic name="title"/>
+            <basic name="content"/>
+            <version name="version">
+                <column name="VERS"/>
+            </version>
+            <many-to-many name="articles">
+                <order-by>lastName, firstName</order-by>
+                <join-table name="ART_AUTHS">
+                    <join-column name="ART_ID" referenced-column-name="ID"/>
+                    <inverse-join-column name="AUTH_ID" referenced-column-name="AID"/>
+                </join-table>
+            </many-to-many>
+        </attributes>
+    </entity>
+    <entity class="org.mag.pub.Company">
+        <table name="COMP"/>
+        <attributes>
+            <id name="id">
+                <column name="CID"/>
+            </id>
+            <basic name="name"/>
+            <basic name="revenue">
+                <column name="REV"/>
+            </basic>
+            <version name="version">
+                <column name="VERS"/>
+            </version>
+            <one-to-many name="mags" mapped-by="publisher">
+                <cascade>
+                    <cascade-persist/>
+                </cascade>
+            </one-to-many>
+            <one-to-many name="subscriptions">
+                <join-table name="COMP_SUBS">
+                    <join-column name="COMP_ID"/>
+                    <inverse-join-column name="SUB_ID"/>
+                </join-table>
+                <cascade>
+                    <cascade-persist/>
+                    <cascade-remove/>
+                </cascade>
+            </one-to-many>
+            <embedded name="address">
+                <attribute-override name="street">
+                   <column name="STRT"/>
+                </attribute-override>
+                <attribute-override name="city">
+                   <column name="ACITY"/>
+                </attribute-override>
+            </embedded>
+        </attributes>
+    </entity>
+    <entity class="org.mag.pub.Author">
+        <table name="AUTH"/>
+        <attributes>
+            <id name="id">
+                <column name="AID" column-definition="INTEGER64"/>
+                <generated-value strategy="TABLE" generator="AuthorGen"/>
+                <table-generator name="AuthorGen" table="AUTH_GEN" 
+                    pk-column-name="PK" value-column-name="AID"/>
+            </id>
+            <basic name="firstName">
+                <column name="FNAME"/>
+            </basic>
+            <basic name="lastName">
+                <column name="LNAME"/>
+            </basic>
+            <version name="version">
+                <column name="VERS"/>
+            </version>
+            <many-to-many name="arts" mapped-by="authors">
+                <cascade>
+                    <cascade-persist/>
+                </cascade>
+            </many-to-many>
+            <embedded name="address"/>
+        </attributes>
+    </entity>
+    <entity class="org.mag.subcribe.Contract">
+        <table schema="CNTRCT"/>
+        <inheritance strategy="JOINED"/>
+        <discriminator-column name="CTYPE"/>
+        <attributes>
+            <basic name="terms">
+                <lob/>
+            </basic>
+        </attributes>
+    </entity>
+    <entity class="org.mag.subcribe.Subscription">
+        <table name="SUB" schema="CNTRCT"/>
+        <inheritance strategy="SINGLE_TABLE"/>
+        <discriminator-value>1</discriminator-value>
+        <discriminator-column name="KIND" discriminator-type="INTEGER"/>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="IDENTITY"/>
+            </id>
+            <basic name="payment">
+                <column name="PAY"/>
+            </basic>
+            <basic name="startDate">
+                <column name="START"/>
+            </basic>
+            <version name="version">
+                <column name="VERS"/>
+            </version>
+            <one-to-many name="items">
+                <map-key name="num"/>
+                <join-table name="SUB_ITEMS" schema="CNTRCT">
+                    <join-column name="SUB_ID"/>
+                    <inverse-join-column name="ITEM_ID"/>
+                </join-table>
+                <cascade>
+                    <cascade-persist/>
+                    <cascade-remove/>
+                </cascade>
+            </one-to-many>
+        </attributes>
+    </entity>
+    <entity class="org.mag.subscribe.Subscription.LineItem">
+        <table name="LINE_ITEM" schema="CNTRCT"/>
+        <attributes>
+            <basic name="comments">
+                <column name="COMM"/>
+            </basic>
+            <basic name="price"/>
+            <basic name="num"/>
+            <many-to-one name="magazine">
+                <join-column name="MAG_ISBN" referenced-column-name="ISBN"/>
+                <join-column name="MAG_TITLE" referenced-column-name="TITLE"/>
+            </many-to-one>
+        </attributes>
+    </entity>
+    <entity class="org.mag.subscribe.LifetimeSubscription" name="Lifetime">
+        <discriminator-value>2</discriminator-value>
+        <attributes>
+            <basic name="eliteClub" fetch="LAZY">
+                <column name="ELITE"/>
+            </basic>
+        </attributes>
+    </entity>
+    <entity class="org.mag.subscribe.TrialSubscription" name="Trial">
+        <discriminator-value>3</discriminator-value>
+        <attributes>
+            <basic name="endDate">
+                <column name="END"/>
+            </basic>
+        </attributes>
+    </entity>
+    <embeddable class="org.mag.pub.Address">
+        <attributes>
+            <basic name="street"/>
+            <basic name="city"/>
+            <basic name="state">
+                <column column-definition="CHAR(2)"/>
+            </basic>
+            <basic name="zip"/>
+        </attributes>
+    </embeddable>
+</entity-mappings>
