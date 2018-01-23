@@ -75,9 +75,11 @@ public class Magazine implements Serializable{
     /**
      * Application identity class for Magazine.
      */
-    public static class MagazineId {
+    public static class MagazineId implements Serializable{
 
-        // each identity field in the Magazine class must have a
+       
+		private static final long serialVersionUID = -4811503113772513189L;
+		// each identity field in the Magazine class must have a
         // corresponding field in the identity class
         public String isbn;
         public String title;

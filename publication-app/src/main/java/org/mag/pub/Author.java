@@ -1,6 +1,7 @@
 package org.mag.pub;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.persistence.CascadeType;
@@ -26,7 +27,7 @@ public class Author implements Serializable{
     @GeneratedValue(strategy=GenerationType.TABLE, generator="AuthorGen")
     
     @TableGenerator(name="AuthorGen", table="AuthorGenerator", pkColumnName="PK",
-        valueColumnName="AuthorId")
+        valueColumnName="AuthorId" ,allocationSize=1)
     @Column(name="AuthorId", columnDefinition="INTEGER64")
     private long id;
 
@@ -91,7 +92,13 @@ public class Author implements Serializable{
 	public void setArts(Collection<Article> arts) {
 		this.arts = arts;
 	}
-
+	
+	public void addAricles(Article art) {
+		if(arts == null){
+			arts = new ArrayList<Article>();
+		}
+		arts.add(art);
+	}
    
 }
 

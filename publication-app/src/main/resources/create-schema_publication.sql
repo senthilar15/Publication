@@ -8,7 +8,7 @@
     )
 
     create table ArticleAuthors (
-       ArticleId numeric(19,0) not null,
+        ArticleId numeric(19,0) not null,
         AuthorId INTEGER64 not null
     )
 
@@ -84,7 +84,7 @@
     )
 
     create table MagazineArticles (
-       MagazineIsbn varchar(9) not null,
+        MagazineIsbn varchar(9) not null,
         MagazineTitle varchar(255) not null,
         ArticleId numeric(19,0) not null
     )

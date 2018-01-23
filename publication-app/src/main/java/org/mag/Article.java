@@ -1,9 +1,9 @@
 package org.mag;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -21,12 +21,12 @@ import org.mag.pub.Author;
 
 @Entity
 @Table(name="Article"/*, uniqueConstraints=@Unique(columnNames="TITLE")*/)
-@SequenceGenerator(name="ArticleSeq", sequenceName="ArticleSeq")
 public class Article implements Serializable{
 
 	private static final long serialVersionUID = 822069193471324176L;
 
 	@Id
+	@SequenceGenerator(name="ArticleSeq", sequenceName="ArticleSeq",allocationSize=1)
     @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="ArticleSeq") 
 	@Column(name="Id")
 	private long id;
@@ -37,10 +37,11 @@ public class Article implements Serializable{
     @Column(name="Title")
     private String title;
     
-    @Column(name="Content",columnDefinition="VARBINAY(MAX)")
+    @Column(name="Content",columnDefinition="VARBINARY(MAX)")
     private byte[] content;
 
-    @ManyToMany(cascade=CascadeType.PERSIST)
+    /*@ManyToMany(cascade=CascadeType.PERSIST)*/
+    @ManyToMany
     @OrderBy("lastName, firstName")
     @JoinTable(name="ArticleAuthors",
         joinColumns=@JoinColumn(name="ArticleId"),
@@ -86,6 +87,17 @@ public class Article implements Serializable{
 	public void setAuthors(Collection<Author> authors) {
 		this.authors = authors;
 	}
+	
+	
+	public void addAuthors(Author author) {
+		if(authors == null){
+			authors = new ArrayList<Author>();
+		}
+		authors.add(author);
+		author.addAricles(this);
+	}
+	
+	
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;

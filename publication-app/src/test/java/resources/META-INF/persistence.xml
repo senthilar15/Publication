@@ -17,7 +17,7 @@
     
     <properties>
       <!-- Configuring JDBC properties -->
-      <property name="javax.persistence.jdbc.url" value="jdbc:sqlserver://172.24.114.239\\BookStore:1433;database=BookStore; " />
+      <property name="javax.persistence.jdbc.url" value="jdbc:sqlserver://172.24.114.239\\Publication:1433;database=Publication; " />
       <property name="javax.persistence.jdbc.user" value="amanda" />
       <property name="javax.persistence.jdbc.password" value="amanda" />
       <property name="javax.persistence.jdbc.driver" value="com.microsoft.sqlserver.jdbc.SQLServerDriver" />
@@ -25,7 +25,7 @@
       <!-- Hibernate properties -->
       <property name="hibernate.show_sql" value="true" />
       <property name="hibernate.format_sql" value="true" />
-      <property name="hibernate.dialect" value="org.hibernate.dialect.SQLServerDialect" />
+      <property name="hibernate.dialect" value="org.hibernate.dialect.SQLServer2012Dialect" />
       <!-- <property name="hibernate.hbm2ddl.auto" value="validate" /> -->
       <property name="hibernate.generate_statistics" value="true" />
       
@@ -43,9 +43,9 @@
       <property name="hibernate.c3p0.idle_test_period" value="2000" />-->
       
       
-     <property name="javax.persistence.schema-generation.scripts.action" value="create"/>
+     <!-- <property name="javax.persistence.schema-generation.scripts.action" value="create"/>
      <property name="javax.persistence.schema-generation.create-source" value="metadata"/>
-     <property name="javax.persistence.schema-generation.scripts.create-target" value="target/jpa/sql/create-schema_publication.sql"/> 
+     <property name="javax.persistence.schema-generation.scripts.create-target" value="target/jpa/sql/create-schema_publication.sql"/>  -->
     </properties>
   </persistence-unit>
 </persistence>
